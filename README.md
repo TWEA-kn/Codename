@@ -18,6 +18,12 @@ npm run build
 node --test tests/*.test.mjs
 ```
 
+## Vercel 部署
+
+将此仓库导入 Vercel，项目根目录使用仓库根目录。`vercel.json` 已配置 Vite 构建和 `dist/client` 输出；使用 Node.js 24。`api/room-proxy.js` 将房间请求转发到现有云端房间服务，因此 Vercel 页面仍可进行两人/四人联机，无需在 Vercel 中配置数据库密钥。
+
+房间数据目前仍由现有 Cloudflare D1 服务保存；该服务须保持运行及公开访问。若要完全迁出 Cloudflare，需要另行接入持久化数据库，不能使用 Vercel 函数的内存或本地文件存储房间。
+
 ## 词库
 
 7 套内置词库。无畏契约 42 词（仅特工和地图），其余六套各 80 词。界面支持 TXT/JSON 导入、混合与去重。自定义词库保存在导入设备，选中后由房主同步到房间。
