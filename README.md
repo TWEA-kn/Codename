@@ -41,3 +41,18 @@ node --test tests/*.test.mjs
 ## 美术资源
 
 Pixelarticons（MIT），Press Start 2P、Fusion Pixel（OFL），许可见 `public/assets/font-licenses/`。默认头像与特工头像由 ImageGen 生成；特工头像参考用户图片，记录在 `public/assets/valorant-avatars-notes.md`。
+
+## Ubuntu standalone deployment
+
+Requires Node.js 22.13+ (with `node:sqlite`), npm, Nginx and systemd. On a dedicated Ubuntu server, as the non-root application user:
+
+```bash
+npm ci && npm run build
+sudo bash deploy/install-ubuntu.sh
+```
+
+The installer replaces the enabled Nginx default site (backs it up as `default.before-codename`), copies built assets into `/var/www/codename`, and enables the `codename` systemd service. API requests are proxied to loopback port 3001. Rooms persist in `/var/lib/codename/rooms.sqlite`; this file and its WAL must be backed up consistently (stop the service before a file copy). Installation does not import existing rooms from the Sites backend. Existing players create new rooms on the new host.
+
+Allow inbound TCP 80 in the cloud firewall. Configure a domain and HTTPS before regular public use. The installer only configures HTTP; it does not change cloud firewall rules, DNS, or certificate settings. Hosting-region requirements still apply.
+
+Check `systemctl status codename` and `journalctl -u codename -n 50`. Updates: pull Git, rebuild, then rerun the installer. Do not run the development server for public hosting.
